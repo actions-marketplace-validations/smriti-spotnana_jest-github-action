@@ -19,7 +19,15 @@ export async function run() {
   let workingDirectory = core.getInput("working-directory", { required: false })
   let cwd = workingDirectory ? resolve(workingDirectory) : process.cwd()
   const CWD = cwd + sep
-  const RESULTS_FILE = join(CWD, "jest.results.json")
+
+  let reports: string[] = core
+    .getInput("reports-array", { required: false })
+    .split("\n")
+    .filter((x) => x !== "")
+
+  // store ALL .json in a common dir, better
+  // const RESULTS_FILE_1 = join(CWD, "jest.common.results.json")
+  // const RESULTS_FILE_2 = join(CWD, "jest.web.results.json")
 
   try {
     const token = process.env.GITHUB_TOKEN
@@ -29,32 +37,53 @@ export async function run() {
       return
     }
 
-    const cmd = getJestCommand(RESULTS_FILE)
+    // this cmd is not being used anywhere now
+    // const cmd = getJestCommand(RESULTS_FILE)
 
-    await execJest(cmd, CWD)
+    // don't run the tests here again, since run already
+    // await execJest(cmd, CWD)
+
+    // should .json be prefixed with CWD
+    // await exec(`nyc merge ${CWD} net-coverage.json`)
 
     // octokit
     const octokit = new GitHub(token)
 
+    // delete before a fresh run
+    await deletePreviousComments(octokit)
+
     // Parse results
-    const results = parseResults(RESULTS_FILE)
+    // const finalResultsFile = join(CWD, "net-coverage.json")
 
-    // Checks
-    const checkPayload = getCheckPayload(results, CWD)
-    await octokit.checks.create(checkPayload)
+    // loop through all reports
+    // why did we not use istanbul for report merge -
+    // didn't want to merge into one
+    for (let report in reports) {
+      const RESULTS_FILE = join(CWD, report)
+      const results = parseResults(RESULTS_FILE)
 
-    // Coverage comments
-    if (getPullId() && shouldCommentCoverage()) {
-      const comment = getCoverageTable(results, CWD)
-      if (comment) {
-        await deletePreviousComments(octokit)
-        const commentPayload = getCommentPayload(comment)
-        await octokit.issues.createComment(commentPayload)
+      // Checks
+      const checkPayload = getCheckPayload(results, CWD)
+      await octokit.checks.create(checkPayload)
+
+      // Coverage comments
+
+      // post an excel
+      // post each as different tabs of excel
+      if (getPullId() && shouldCommentCoverage()) {
+        const comment = getCoverageTable(results, CWD)
+        if (comment) {
+          // only deletes related comment, not other db related e.g.
+          // don't delete, as we are posting multiple comments
+          // await deletePreviousComments(octokit)
+          const commentPayload = getCommentPayload(comment)
+          await octokit.issues.createComment(commentPayload)
+        }
       }
-    }
 
-    if (!results.success) {
-      core.setFailed("Some jest tests failed.")
+      if (!results.success) {
+        core.setFailed("Some jest tests failed.")
+      }
     }
   } catch (error) {
     console.error(error)
@@ -156,7 +185,13 @@ function getJestCommand(resultsFile: string) {
       ? "--changedSince=" + context.payload.pull_request?.base.ref
       : ""
   } --outputFile=${resultsFile}`
-  const shouldAddHyphen = cmd.startsWith("npm") || cmd.startsWith("npx") || cmd.startsWith("pnpm") || cmd.startsWith("pnpx")
+  // add support for yarn
+  const shouldAddHyphen =
+    cmd.startsWith("npm") ||
+    cmd.startsWith("npx") ||
+    cmd.startsWith("pnpm") ||
+    cmd.startsWith("pnpx") ||
+    cmd.startsWith("yarn")
   cmd += (shouldAddHyphen ? " -- " : " ") + jestOptions
   core.debug("Final test command: " + cmd)
   return cmd

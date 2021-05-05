@@ -1,4 +1,4 @@
-name: "Jest Annotations & Coverage"
+name: "Post multiple coverage reports"
 description: "Jest action adding checks and annotations to your pull requests and comment them with code coverage results."
 branding:
   icon: "check"
@@ -12,6 +12,10 @@ inputs:
     description: "Subdirectory to run tests in"
     required: false
     default: ""
+  reports-array:
+    description: "All reports array"
+    required: false
+    default: "jest.results.json"
   coverage-comment:
     description: "Comment PRs with code coverage"
     required: false
