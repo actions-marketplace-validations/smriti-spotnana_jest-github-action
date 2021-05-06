@@ -71,8 +71,14 @@ export async function run() {
     // why did we not use istanbul for report merge -
     // didn't want to merge into one
     for (let report in reports) {
-      const RESULTS_FILE = join(CWD, report)
-      console.debug(RESULTS_FILE, CWD, report, "RESULS_FILE CWD report...")
+      const RESULTS_FILE = join(CWD, reports[report])
+      console.debug(
+        RESULTS_FILE,
+        CWD,
+        report,
+        report[report],
+        "RESULS_FILE CWD report...",
+      )
       const results = parseResults(RESULTS_FILE)
       console.debug(results, "results ...")
       // Checks
