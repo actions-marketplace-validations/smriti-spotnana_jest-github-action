@@ -13,6 +13,8 @@ import { createCoverageMap, CoverageMapData } from "istanbul-lib-coverage"
 import type { FormattedTestResults } from "@jest/test-result/build/types"
 
 const ACTION_NAME = "my-jest-github-action"
+
+// update this header name based on the file run
 const COVERAGE_HEADER = ":loop: **Code coverage**\n\n"
 
 export async function run() {
