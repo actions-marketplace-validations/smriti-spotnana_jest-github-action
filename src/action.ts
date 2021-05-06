@@ -62,7 +62,7 @@ export async function run() {
     const octokit = new GitHub(token)
 
     // delete before a fresh run
-    await deletePreviousComments(octokit)
+    // await deletePreviousComments(octokit)
 
     // Parse results
     // const finalResultsFile = join(CWD, "net-coverage.json")
@@ -70,6 +70,8 @@ export async function run() {
     // loop through all reports
     // why did we not use istanbul for report merge -
     // didn't want to merge into one
+
+    // report is index here, hence report[report]
     for (let report in reports) {
       const RESULTS_FILE = join(CWD, reports[report])
       console.debug(
@@ -80,7 +82,7 @@ export async function run() {
         "RESULS_FILE CWD report...",
       )
       const results = parseResults(RESULTS_FILE)
-      console.debug(results, "results ...")
+      // console.debug(results, "results ...")
       // Checks
       const checkPayload = getCheckPayload(results, CWD)
       await octokit.checks.create(checkPayload)
