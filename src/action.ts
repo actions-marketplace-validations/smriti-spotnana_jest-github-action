@@ -18,13 +18,13 @@ const ACTION_NAME = "my-jest-github-action"
 const COVERAGE_HEADER = ":loop: **Code coverage**\n\n"
 
 export async function run() {
-  console.warn("starting the run .........", process.env.GITHUB_TOKEN, process.env.BRANCH)
-  // let workingDirectory = core.getInput("working-directory", { required: false })
-  // let cwd = workingDirectory ? resolve(workingDirectory) : "src/react"
+  console.warn("starting the run .........", process.env.GITHUB_TOKEN)
+  let workingDirectory = core.getInput("working-directory", { required: false })
+  let cwd = workingDirectory ? resolve(workingDirectory) : "src/react"
   // : process.cwd()
-  const cwd = process.env.BRANCH
+  // const cwd = process.env.BRANCH
   // console.log vs console.debug
-  console.debug(cwd, "input working-directory vs using")
+  console.debug(cwd, "working-directory ...")
 
   const CWD = cwd + sep
 
@@ -33,13 +33,9 @@ export async function run() {
     .split(" ")
     .filter((x) => x !== "")
 
-  reports = ["jest.common.json", "jest.web.json", "jest.pixel.json"]
+  // reports = ["jest.common.json", "jest.web.json", "jest.pixel.json"]
 
-  console.debug(
-    core.getInput("reports-array", { required: false }),
-    reports,
-    "input reports-array vs using",
-  )
+  console.debug(reports, "reports ...")
 
   // store ALL .json in a common dir, better
   // const RESULTS_FILE_1 = join(CWD, "jest.common.results.json")
@@ -76,9 +72,9 @@ export async function run() {
     // didn't want to merge into one
     for (let report in reports) {
       const RESULTS_FILE = join(CWD, report)
-      console.debug(RESULTS_FILE, "RESULS_FILE")
+      console.debug(RESULTS_FILE, "RESULS_FILE ...")
       const results = parseResults(RESULTS_FILE)
-
+      console.debug(results, "results ...")
       // Checks
       const checkPayload = getCheckPayload(results, CWD)
       await octokit.checks.create(checkPayload)
