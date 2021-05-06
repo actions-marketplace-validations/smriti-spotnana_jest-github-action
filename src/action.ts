@@ -62,7 +62,7 @@ export async function run() {
     const octokit = new GitHub(token)
 
     // delete before a fresh run
-    // await deletePreviousComments(octokit)
+    await deletePreviousComments(octokit)
 
     // Parse results
     // const finalResultsFile = join(CWD, "net-coverage.json")
@@ -92,11 +92,14 @@ export async function run() {
       // post an excel
       // post each as different tabs of excel
 
-      console.debug("get pull id, shud comnt", getPullId(), shouldCommentCoverage())
+      // console.debug("get pull id, shud comnt", getPullId(), shouldCommentCoverage())
 
       if (getPullId() && shouldCommentCoverage()) {
         // console.debug("before comment")
-        const comment = getCoverageTable(results, CWD)
+
+        // or just get as an input
+        const coverageHeader = COVERAGE_HEADER + reports[report].split(".")[1]
+        const comment = getCoverageTable(results, CWD, coverageHeader)
 
         // false, bcoz i supplied unit tests, not coverage reports??
         // run --coverage!!
@@ -107,12 +110,12 @@ export async function run() {
           // don't delete, as we are posting multiple comments
           // await deletePreviousComments(octokit)
 
-          console.debug("1 - inside comment block...")
+          // console.debug("1 - inside comment block...")
           const commentPayload = getCommentPayload(comment)
-          console.debug("2 - inside comment block...")
+          // console.debug("2 - inside comment block...")
 
           await octokit.issues.createComment(commentPayload)
-          console.debug("3 - inside comment block...")
+          // console.debug("3 - inside comment block...")
         }
       }
 
@@ -153,13 +156,24 @@ function shouldRunOnlyChangedFiles(): boolean {
 export function getCoverageTable(
   results: FormattedTestResults,
   cwd: string,
+  coverageHeader: string,
 ): string | false {
-  console.log(results, "reseults ...")
+  // console.log(results, "reseults ...")
   if (!results.coverageMap) {
     return ""
   }
   const covMap = createCoverageMap((results.coverageMap as unknown) as CoverageMapData)
   const rows = [["Filename", "Statements", "Branches", "Functions", "Lines"]]
+
+  /** Trying to get overall coverage */
+  const f = results.coverageMap.getCoverageSummary()
+  const summaryToRow = [
+    formatIfPoor(f.statements.pct!),
+    formatIfPoor(f.branches.pct!),
+    formatIfPoor(f.functions.pct!),
+    formatIfPoor(f.lines.pct!),
+  ]
+  const headers = [["Statements", "Branches", "Functions", "Lines"]]
 
   if (!Object.keys(covMap.data).length) {
     console.error("No entries found in coverage data")
@@ -177,7 +191,12 @@ export function getCoverageTable(
     ])
   }
 
-  return COVERAGE_HEADER + table(rows, { align: ["l", "r", "r", "r", "r"] })
+  // allow collapse/expand-ing too
+  return (
+    coverageHeader +
+    table([summaryToRow]) +
+    table(rows, { align: ["l", "r", "r", "r", "r"] })
+  )
 }
 
 function getCommentPayload(body: string) {
@@ -285,4 +304,17 @@ const getOutputText = (results: FormattedTestResults) => {
 
 export function asMarkdownCode(str: string) {
   return "```\n" + str.trimRight() + "\n```"
+}
+
+function formatIfPoor(number: number): string {
+  if (number > 90) {
+    return `${number} :green_circle:`
+  }
+  if (number > 75) {
+    return `${number} :yellow_circle:`
+  }
+  if (number > 50) {
+    return `${number} :orange_circle:`
+  }
+  return `${number} :red_circle:`
 }
