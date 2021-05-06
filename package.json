@@ -1,5 +1,5 @@
 {
-  "name": "jest-github-action",
+  "name": "my-jest-github-action",
   "version": "1.0.0",
   "description": "Post multiple reports, avoid test re-run",
   "main": "lib/run.js",
