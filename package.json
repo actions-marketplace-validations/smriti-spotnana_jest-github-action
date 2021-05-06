@@ -1,7 +1,7 @@
 {
   "name": "jest-github-action",
   "version": "1.0.0",
-  "description": "Jest action adding checks to your pull requests",
+  "description": "Post multiple reports, avoid test re-run",
   "main": "lib/run.js",
   "scripts": {
     "lint": "eslint src/**/*.ts",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mattallty/jest-github-action.git"
+    "url": "git+https://github.com/smriti-spotnana/jest-github-action.git"
   },
   "keywords": [
     "GitHub",

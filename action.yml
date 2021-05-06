@@ -1,5 +1,5 @@
 name: "Post multiple coverage reports"
-description: "Jest action adding checks and annotations to your pull requests and comment them with code coverage results."
+description: "Get Code Coverage"
 branding:
   icon: "check"
   color: "blue"
@@ -11,11 +11,11 @@ inputs:
   working-directory:
     description: "Subdirectory to run tests in"
     required: false
-    default: ""
+    default: "src/react"
   reports-array:
     description: "All reports array"
     required: false
-    default: "jest.results.json"
+    default: "jest.common.json jest.web.json jest.pixel.json"
   coverage-comment:
     description: "Comment PRs with code coverage"
     required: false
