@@ -17,13 +17,24 @@ const COVERAGE_HEADER = ":loop: **Code coverage**\n\n"
 
 export async function run() {
   let workingDirectory = core.getInput("working-directory", { required: false })
-  let cwd = workingDirectory ? resolve(workingDirectory) : process.cwd()
+  let cwd = workingDirectory ? resolve(workingDirectory) : "src/react"
+  // : process.cwd()
+  console.log(workingDirectory, cwd, "input working-directory vs using")
+
   const CWD = cwd + sep
 
   let reports: string[] = core
     .getInput("reports-array", { required: false })
     .split(" ")
     .filter((x) => x !== "")
+
+  reports = ["jest.common.json", "jest.web.json", "jest.pixel.json"]
+
+  console.log(
+    core.getInput("reports-array", { required: false }),
+    reports,
+    "input reports-array vs using",
+  )
 
   // store ALL .json in a common dir, better
   // const RESULTS_FILE_1 = join(CWD, "jest.common.results.json")
