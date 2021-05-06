@@ -91,14 +91,25 @@ export async function run() {
 
       // post an excel
       // post each as different tabs of excel
+
+      console.debug("get pull id, shud comnt", getPullId(), shouldCommentCoverage())
+
       if (getPullId() && shouldCommentCoverage()) {
+        console.debug("before comment")
         const comment = getCoverageTable(results, CWD)
+        console.debug("after comment", Boolean(comment))
+
         if (comment) {
           // only deletes related comment, not other db related e.g.
           // don't delete, as we are posting multiple comments
           // await deletePreviousComments(octokit)
+
+          console.debug("1 - inside comment block...")
           const commentPayload = getCommentPayload(comment)
+          console.debug("2 - inside comment block...")
+
           await octokit.issues.createComment(commentPayload)
+          console.debug("3 - inside comment block...")
         }
       }
 
@@ -193,7 +204,7 @@ function getCheckPayload(results: FormattedTestResults, cwd: string) {
       annotations: getAnnotations(results, cwd),
     },
   }
-  console.debug("Check payload: %j", payload)
+  // console.debug("Check payload: %j", payload)
   return payload
 }
 
@@ -220,7 +231,7 @@ function getJestCommand(resultsFile: string) {
 
 function parseResults(resultsFile: string): FormattedTestResults {
   const results = JSON.parse(readFileSync(resultsFile, "utf-8"))
-  console.debug("Jest results: %j", results)
+  // console.debug("Jest results: %j", results)
   return results
 }
 
