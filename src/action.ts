@@ -22,7 +22,7 @@ export async function run() {
 
   let reports: string[] = core
     .getInput("reports-array", { required: false })
-    .split("\n")
+    .split(" ")
     .filter((x) => x !== "")
 
   // store ALL .json in a common dir, better
