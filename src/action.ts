@@ -12,10 +12,11 @@ import table from "markdown-table"
 import { createCoverageMap, CoverageMapData } from "istanbul-lib-coverage"
 import type { FormattedTestResults } from "@jest/test-result/build/types"
 
-const ACTION_NAME = "jest-github-action"
+const ACTION_NAME = "my-jest-github-action"
 const COVERAGE_HEADER = ":loop: **Code coverage**\n\n"
 
 export async function run() {
+  console.warn("starting the run .........")
   let workingDirectory = core.getInput("working-directory", { required: false })
   let cwd = workingDirectory ? resolve(workingDirectory) : "src/react"
   // : process.cwd()
