@@ -18,13 +18,13 @@ const ACTION_NAME = "my-jest-github-action"
 const COVERAGE_HEADER = ":loop: **Code coverage**\n\n"
 
 export async function run() {
-  console.warn("starting the run .........")
-  let workingDirectory = core.getInput("working-directory", { required: false })
-  let cwd = workingDirectory ? resolve(workingDirectory) : "src/react"
+  console.warn("starting the run .........", process.env.GITHUB_TOKEN, process.env.BRANCH)
+  // let workingDirectory = core.getInput("working-directory", { required: false })
+  // let cwd = workingDirectory ? resolve(workingDirectory) : "src/react"
   // : process.cwd()
-
+  const cwd = process.env.BRANCH
   // console.log vs console.debug
-  console.debug(workingDirectory, cwd, "input working-directory vs using")
+  console.debug(cwd, "input working-directory vs using")
 
   const CWD = cwd + sep
 
