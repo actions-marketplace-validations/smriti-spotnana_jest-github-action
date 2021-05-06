@@ -19,7 +19,9 @@ export async function run() {
   let workingDirectory = core.getInput("working-directory", { required: false })
   let cwd = workingDirectory ? resolve(workingDirectory) : "src/react"
   // : process.cwd()
-  console.log(workingDirectory, cwd, "input working-directory vs using")
+
+  // console.log vs console.debug
+  console.debug(workingDirectory, cwd, "input working-directory vs using")
 
   const CWD = cwd + sep
 
@@ -30,7 +32,7 @@ export async function run() {
 
   reports = ["jest.common.json", "jest.web.json", "jest.pixel.json"]
 
-  console.log(
+  console.debug(
     core.getInput("reports-array", { required: false }),
     reports,
     "input reports-array vs using",
@@ -71,6 +73,7 @@ export async function run() {
     // didn't want to merge into one
     for (let report in reports) {
       const RESULTS_FILE = join(CWD, report)
+      console.debug(RESULTS_FILE, "RESULS_FILE")
       const results = parseResults(RESULTS_FILE)
 
       // Checks
