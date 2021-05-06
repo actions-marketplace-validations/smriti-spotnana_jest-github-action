@@ -71,14 +71,14 @@ export async function run() {
     // why did we not use istanbul for report merge -
     // didn't want to merge into one
 
-    // report is index here, hence report[report]
+    // report is index here, hence reports[report]
     for (let report in reports) {
       const RESULTS_FILE = join(CWD, reports[report])
       console.debug(
         RESULTS_FILE,
         CWD,
         report,
-        report[report],
+        reports[report],
         "RESULS_FILE CWD report...",
       )
       const results = parseResults(RESULTS_FILE)
@@ -95,8 +95,11 @@ export async function run() {
       console.debug("get pull id, shud comnt", getPullId(), shouldCommentCoverage())
 
       if (getPullId() && shouldCommentCoverage()) {
-        console.debug("before comment")
+        // console.debug("before comment")
         const comment = getCoverageTable(results, CWD)
+
+        // false, bcoz i supplied unit tests, not coverage reports??
+        // run --coverage!!
         console.debug("after comment", Boolean(comment))
 
         if (comment) {
@@ -151,6 +154,7 @@ export function getCoverageTable(
   results: FormattedTestResults,
   cwd: string,
 ): string | false {
+  console.log(results, "reseults ...")
   if (!results.coverageMap) {
     return ""
   }
