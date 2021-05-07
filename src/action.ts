@@ -15,7 +15,7 @@ import type { FormattedTestResults } from "@jest/test-result/build/types"
 const ACTION_NAME = "my-jest-github-action"
 
 // update this header name based on the file run
-const COVERAGE_HEADER = ":loop: **Code coverage**\n\n"
+const COVERAGE_HEADER = ":loop: **Code coverage**"
 
 export async function run() {
   console.warn("starting the run .........", process.env.GITHUB_TOKEN)
@@ -98,7 +98,9 @@ export async function run() {
         // console.debug("before comment")
 
         // or just get as an input
-        const coverageHeader = COVERAGE_HEADER + reports[report].split(".")[1]
+        const coverageHeader = `:loop: **Code coverage** - ${
+          reports[report].split(".")[1]
+        }\n\n`
         const comment = getCoverageTable(results, CWD, coverageHeader)
 
         // false, bcoz i supplied unit tests, not coverage reports??
