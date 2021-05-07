@@ -98,9 +98,7 @@ export async function run() {
         // console.debug("before comment")
 
         // or just get as an input
-        const coverageHeader = `:loop: **Code coverage** - ${
-          reports[report].split(".")[1]
-        }\n\n`
+        const coverageHeader = `:loop: **Code coverage**`
         const comment = getCoverageTable(results, CWD, coverageHeader)
 
         // false, bcoz i supplied unit tests, not coverage reports??
