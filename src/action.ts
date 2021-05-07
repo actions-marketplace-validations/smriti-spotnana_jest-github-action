@@ -166,14 +166,14 @@ export function getCoverageTable(
   const rows = [["Filename", "Statements", "Branches", "Functions", "Lines"]]
 
   /** Trying to get overall coverage */
-  const f = results.coverageMap.getCoverageSummary()
-  const summaryToRow = [
-    formatIfPoor(f.statements.pct!),
-    formatIfPoor(f.branches.pct!),
-    formatIfPoor(f.functions.pct!),
-    formatIfPoor(f.lines.pct!),
-  ]
-  const headers = [["Statements", "Branches", "Functions", "Lines"]]
+  // const f = results.coverageMap.getCoverageSummary()
+  // const summaryToRow = [
+  //   formatIfPoor(f.statements.pct!),
+  //   formatIfPoor(f.branches.pct!),
+  //   formatIfPoor(f.functions.pct!),
+  //   formatIfPoor(f.lines.pct!),
+  // ]
+  // const headers = [["Statements", "Branches", "Functions", "Lines"]]
 
   if (!Object.keys(covMap.data).length) {
     console.error("No entries found in coverage data")
@@ -192,11 +192,7 @@ export function getCoverageTable(
   }
 
   // allow collapse/expand-ing too
-  return (
-    coverageHeader +
-    table([summaryToRow]) +
-    table(rows, { align: ["l", "r", "r", "r", "r"] })
-  )
+  return coverageHeader + table(rows, { align: ["l", "r", "r", "r", "r"] })
 }
 
 function getCommentPayload(body: string) {
